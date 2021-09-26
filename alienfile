@@ -1,0 +1,47 @@
+use alienfile;
+
+plugin PkgConfig => 'plplot';
+
+share {
+	# NOTE currently only pulling PLplot 5.15.0
+	start_url 'https://sourceforge.net/projects/plplot/files/plplot/5.15.0%20Source/';
+	plugin 'Decode::SourceForge';
+
+	plugin Download => (
+		filter  => qr/^plplot-.*\.tar\.gz$/,
+		version => qr/([0-9\.]+)/,
+	);
+
+	plugin Extract => 'tar.gz';
+	plugin 'Build::CMake';
+	build [
+		[ '%{cmake}', qw(
+			-DENABLE_ada=OFF
+			-DENABLE_cxx=OFF
+			-DENABLE_d=OFF
+			-DENABLE_fortran=OFF
+			-DENABLE_java=OFF
+			-DENABLE_lua=OFF
+			-DENABLE_ocaml=OFF
+			-DENABLE_octave=OFF
+			-DENABLE_python=OFF
+			-DENABLE_qt=OFF
+			-DENABLE_pyqt4=OFF
+			-DENABLE_tcl=OFF
+			-DENABLE_itcl=OFF
+			-DENABLE_tk=OFF
+			-DENABLE_itk=OFF
+			-DENABLE_wxwidgets=OFF
+
+			-DPLPLOT_USE_QT5=OFF
+			-DPL_DOUBLE=ON
+			),
+			@{ meta->prop->{plugin_build_cmake}->{args} },
+			'%{.install.extract}'
+		],
+		'%{make}',
+		'%{make} install',
+	];
+
+	plugin 'Gather::IsolateDynamic';
+}
