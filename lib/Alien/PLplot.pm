@@ -5,6 +5,10 @@ use warnings;
 use base qw( Alien::Base );
 use 5.008004;
 
+sub inline_auto_include {
+	return  [ 'plplot.h' ];
+}
+
 1;
 __END__
 # ABSTRACT: Alien package for the PLplot plotting library
