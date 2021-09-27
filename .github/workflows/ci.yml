@@ -77,7 +77,9 @@ jobs:
         shell: bash
         run: |
           # test dep
-          cpanm -n FFI::Platypus
+          if ${{ toJSON( runner.os != 'Windows' ) }}; then
+            cpanm -n FFI::Platypus
+          fi
       - name: Set ALIEN_INSTALL_TYPE
         shell: bash
         run: |
