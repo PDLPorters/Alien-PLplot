@@ -48,5 +48,5 @@ share {
 		'%{make} install',
 	];
 
-	plugin 'Gather::IsolateDynamic';
+	plugin 'Gather::Dino';
 }

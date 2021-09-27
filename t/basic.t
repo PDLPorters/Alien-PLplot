@@ -3,8 +3,23 @@ use Test::Alien;
 use Test::Alien::Diag;
 use Alien::PLplot;
 
+use Env qw(@LD_LIBRARY_PATH @DYLD_FALLBACK_LIBRARY_PATH @PATH);
+use DynaLoader;
+
 alien_diag 'Alien::PLplot';
 alien_ok 'Alien::PLplot';
+
+if( Alien::PLplot->install_type('share') ) {
+	unshift @LD_LIBRARY_PATH, Alien::PLplot->rpath;
+	unshift @DYLD_FALLBACK_LIBRARY_PATH, Alien::PLplot->rpath;
+	unshift @PATH, Alien::PLplot->rpath;
+	unshift @DynaLoader::dl_library_path, Alien::PLplot->rpath;
+	# load shared object dependencies
+	for my $lib ( qw(-lcsirocsa -lqsastime -lplplot) ) {
+		my @files = DynaLoader::dl_findfile($lib);
+		DynaLoader::dl_load_file($files[0]) if @files;
+	}
+}
 
 ffi_ok { symbols => ['c_plgver'] }, with_subtest {
 	my ($ffi) = @_;

@@ -3,7 +3,10 @@ package Alien::PLplot;
 use strict;
 use warnings;
 use base qw( Alien::Base );
+use Role::Tiny::With qw( with );
 use 5.008004;
+
+with 'Alien::Role::Dino';
 
 1;
 __END__
