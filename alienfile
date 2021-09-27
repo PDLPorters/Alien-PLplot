@@ -41,6 +41,9 @@ share {
 				? ( '-DPKG_CONFIG_EXECUTABLE=' . File::Which::which('pkg-config'), )
 				: ()
 			),
+			qw(
+				-DBUILD_SHARED_LIBS=OFF
+			),
 			@{ meta->prop->{plugin_build_cmake}->{args} },
 			'%{.install.extract}'
 		],
