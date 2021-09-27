@@ -23,6 +23,14 @@ if( Alien::PLplot->install_type('share') ) {
 	}
 }
 
+my $version_re = qr/^(\d+)\.(\d+)\.(\d+)$/;
+
+my $xs = do { local $/; <DATA> };
+xs_ok $xs, with_subtest {
+	my($module) = @_;
+	like $module->version, $version_re;
+};
+
 ffi_ok { symbols => ['c_plgver'] }, with_subtest {
 	my ($ffi) = @_;
 	eval q{
@@ -36,9 +44,32 @@ ffi_ok { symbols => ['c_plgver'] }, with_subtest {
 	my $version = $ffi->cast( 'opaque' => 'string', $buffer );
 
 	note "version: $version";
-	like $version, qr/^(\d+)\.(\d+)\.(\d+)$/;
+	like $version, $version_re;
 
 	free($buffer);
 };
 
 done_testing;
+__DATA__
+#include "EXTERN.h"
+#include "perl.h"
+#include "XSUB.h"
+
+#include <string.h>
+#include <plplot.h>
+
+SV*
+version(const char *class)
+{
+	char ver[80];
+	c_plgver(ver);
+
+	SV* ver_sv = newSVpv( ver, strlen(ver) );
+
+	return ver_sv;
+}
+
+MODULE = TA_MODULE PACKAGE = TA_MODULE
+
+SV* version(class);
+	const char *class;
