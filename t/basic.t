@@ -5,15 +5,17 @@ use Alien::PLplot;
 
 use Env qw(@LD_LIBRARY_PATH @DYLD_FALLBACK_LIBRARY_PATH @PATH);
 use DynaLoader;
+use File::Basename qw(dirname);
 
 alien_diag 'Alien::PLplot';
 alien_ok 'Alien::PLplot';
 
 if( Alien::PLplot->install_type('share') ) {
-	unshift @LD_LIBRARY_PATH, Alien::PLplot->rpath;
-	unshift @DYLD_FALLBACK_LIBRARY_PATH, Alien::PLplot->rpath;
-	unshift @PATH, Alien::PLplot->rpath;
-	unshift @DynaLoader::dl_library_path, Alien::PLplot->rpath;
+	my $rpath = dirname( ( Alien::PLplot->dynamic_libs )[0] );
+	unshift @LD_LIBRARY_PATH, $rpath;
+	unshift @DYLD_FALLBACK_LIBRARY_PATH, $rpath;
+	unshift @PATH, $rpath;
+	unshift @DynaLoader::dl_library_path, $rpath;
 	# load shared object dependencies
 	for my $lib ( qw(-lcsirocsa -lqsastime -lplplot) ) {
 		my @files = DynaLoader::dl_findfile($lib);
