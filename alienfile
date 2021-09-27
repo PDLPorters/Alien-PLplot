@@ -3,6 +3,7 @@ use alienfile;
 plugin PkgConfig => 'plplot';
 
 share {
+	requires 'File::Which';
 	# NOTE currently only pulling PLplot 5.15.0
 	start_url 'https://sourceforge.net/projects/plplot/files/plplot/5.15.0%20Source/';
 	plugin 'Decode::SourceForge';
@@ -35,6 +36,10 @@ share {
 
 			-DPLPLOT_USE_QT5=OFF
 			-DPL_DOUBLE=ON
+			),
+			( $^O eq 'MSWin32'
+				? ( '-DPKG_CONFIG_EXECUTABLE=' . File::Which::which('pkg-config'), )
+				: ()
 			),
 			@{ meta->prop->{plugin_build_cmake}->{args} },
 			'%{.install.extract}'
