@@ -44,7 +44,9 @@ share {
 			qw(
 				-DBUILD_SHARED_LIBS=OFF
 			),
-			@{ meta->prop->{plugin_build_cmake}->{args} },
+			( grep { $_ !~ /\Q-DCMAKE_INSTALL_LIBDIR:PATH=\E/ }
+				@{ meta->prop->{plugin_build_cmake}->{args} },
+			),
 			'%{.install.extract}'
 		],
 		'%{make}',
