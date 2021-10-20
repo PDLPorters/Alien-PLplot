@@ -3,7 +3,12 @@ package Alien::PLplot;
 use strict;
 use warnings;
 use base qw( Alien::Base );
+use File::Spec;
 use 5.008004;
+
+sub inline_auto_include {
+	return  [ 'plplot.h' ];
+}
 
 1;
 __END__
