@@ -78,7 +78,7 @@ jobs:
         run: |
           # test dep
           if ${{ toJSON( runner.os != 'Windows' ) }}; then
-            cpanm -n FFI::Platypus
+            $MYPERL -S cpanm -n FFI::Platypus || cat ~/.cpanm/build.log
           fi
       - name: Set ALIEN_INSTALL_TYPE
         shell: bash
