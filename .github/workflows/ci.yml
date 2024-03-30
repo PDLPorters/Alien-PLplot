@@ -46,10 +46,10 @@ jobs:
           - perl-version: '5.30'
             os: windows-latest
           - perl-version: '5.30'
-            os: macos-11
+            os: macos-latest
             alien-install-type: 'system'
           - perl-version: '5.30'
-            os: macos-11
+            os: macos-latest
             alien-install-type: 'share'
     steps:
       - uses: actions/checkout@v2
